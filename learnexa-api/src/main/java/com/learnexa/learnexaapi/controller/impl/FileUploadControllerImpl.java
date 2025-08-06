@@ -23,26 +23,11 @@ public class FileUploadControllerImpl implements IFileUploadController {
 
     @PostMapping("file")
     public ResponseEntity<?> uploadFile(@RequestParam("file") MultipartFile file) throws IOException {
-        System.out.println("File Name: "+ file.getOriginalFilename());
+        System.out.println("File Name: " + file.getOriginalFilename());
         byte[] fileContent = file.getBytes();
         String contentType = file.getContentType();
         fileUploadService.uploadFile(fileContent, contentType);
         return ResponseEntity.status(HttpStatus.OK).build();
-    }
-
-    @PostMapping("file-test/{startEpoch}")
-    @Override
-    public ResponseEntity<?> uploadFileTest(@RequestParam("file") MultipartFile file, @PathVariable long startEpoch) throws IOException {
-
-        byte[] fileContent = file.getBytes();
-        String contentType = file.getContentType();
-
-        // Döngü içinde aynı dosyayı kopyalayarak işlem yapalım
-        for (int i = 0; i < 1000; i++) {
-
-            fileUploadService.uploadFile(fileContent, contentType);
-        }
-        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 
 
@@ -53,40 +38,4 @@ public class FileUploadControllerImpl implements IFileUploadController {
         fileUploadService.uploadFileBytes(byteFile);
         return ResponseEntity.status(HttpStatus.OK).build();
     }
-
-    @PostMapping("file-bytes-test/{startEpoch}")
-    @Override
-    public ResponseEntity<?> uploadFileBytesTest(@RequestBody byte[] byteFile, @PathVariable long startEpoch) {
-
-        for (int i = 0; i < 1000; i++) {
-            fileUploadService.uploadFileBytesTest(byteFile, startEpoch);
-        }
-
-        return ResponseEntity.status(HttpStatus.CREATED).build();
-    }
-
-
-    @PostMapping("file-bytes-future")
-    @Override
-    public RootEntity<DtoUploadedFile> uploadFileBytesFuture(@RequestBody byte[] byteFile) {
-        System.out.println("Girdi burada şuan");
-        CompletableFuture<DtoUploadedFile> future = fileUploadService.uploadFileBytesFuture(byteFile);
-
-        return future.thenApply(dto -> RootEntity.ok(dto)).join();
-    }
-
-
-    @Override
-    @GetMapping("epoch-avg/{fileName}")
-    public String avgEpoch(@PathVariable String fileName) {
-        double averageEpochTime = 0;
-        try {
-            averageEpochTime = fileUploadService.calculateAverageEpochTime(fileName);
-            System.out.println("Ortalama Epoch Süresi: " + averageEpochTime + " ms");
-        } catch (RuntimeException e) {
-            System.err.println(e.getMessage());
-        }
-        return String.valueOf(averageEpochTime);  // join() ile işlemin tamamlanmasını bekleyip sonucu döndürüyoruz
-    }
-
 }

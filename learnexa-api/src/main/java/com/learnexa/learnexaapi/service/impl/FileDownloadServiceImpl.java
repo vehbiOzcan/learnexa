@@ -35,18 +35,6 @@ public class FileDownloadServiceImpl implements IFileDownloadService {
     @Autowired
     private UploadedFileRepository uploadedFileRepository;
 
-    @Override
-    public DtoDownloadFile downloadFile(String fileName) {
-        Path filePath = uploadDir.resolve(fileName).normalize();
-
-        File file = filePath.toFile();
-        if (!file.exists()) {
-            throw new BaseException(new ErrorMessage(MessageType.FILE_NOT_FOUND));
-        }
-
-
-        return null;
-    }
 
     @Override
     public DtoDownloadFile downloadFileByte(String fileName) {
