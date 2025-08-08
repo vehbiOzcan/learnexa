@@ -1,6 +1,6 @@
 package com.learnexa.learnexaapi.dto;
 
-import com.learnexa.learnexaapi.entity.Role;
+import com.learnexa.learnexaapi.entity.enums.Role;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;

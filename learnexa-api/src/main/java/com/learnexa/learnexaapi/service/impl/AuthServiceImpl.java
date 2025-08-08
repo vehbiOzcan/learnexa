@@ -3,19 +3,19 @@ package com.learnexa.learnexaapi.service.impl;
 import com.learnexa.learnexaapi.dto.DtoUser;
 import com.learnexa.learnexaapi.entity.AccessToken;
 import com.learnexa.learnexaapi.entity.RefreshToken;
-import com.learnexa.learnexaapi.entity.Role;
+import com.learnexa.learnexaapi.entity.enums.Role;
 import com.learnexa.learnexaapi.entity.User;
 import com.learnexa.learnexaapi.exception.BaseException;
 import com.learnexa.learnexaapi.exception.ErrorMessage;
 import com.learnexa.learnexaapi.exception.MessageType;
 import com.learnexa.learnexaapi.jwt.IJwtService;
 import com.learnexa.learnexaapi.jwt.IRefreshTokenService;
-import com.learnexa.learnexaapi.jwt.dto.AuthRequest;
-import com.learnexa.learnexaapi.jwt.dto.AuthResponse;
-import com.learnexa.learnexaapi.jwt.dto.RefreshTokenRequest;
+import com.learnexa.learnexaapi.dto.auth.AuthRequest;
+import com.learnexa.learnexaapi.dto.auth.AuthResponse;
+import com.learnexa.learnexaapi.dto.auth.RefreshTokenRequest;
+import com.learnexa.learnexaapi.dto.auth.RegisterRequest;
 import com.learnexa.learnexaapi.repository.UserRepository;
 import com.learnexa.learnexaapi.service.IAuthService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -46,15 +46,17 @@ public class AuthServiceImpl implements IAuthService {
     private IRefreshTokenService refreshTokenService;
 
     @Override
-    public DtoUser register(AuthRequest authRequest) {
+    public DtoUser register(RegisterRequest registerRequest) {
         DtoUser dtoUser = new DtoUser();
         User user = new User();
-        if(userRepository.findByUsername(authRequest.getUsername()).isPresent()) {
+        if(userRepository.findByUsername(registerRequest.getEmail().split("@")[0]).isPresent()) {
             throw new BaseException(new ErrorMessage(MessageType.USER_ALREADY_EXISTS));
         }
-        user.setUsername(authRequest.getUsername());
-        user.setPassword(bCryptPasswordEncoder.encode(authRequest.getPassword()));
+        user.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
+        user.setUsername(registerRequest.getEmail().split("@")[0]);
+        user.setAdSoyad(registerRequest.getFullname());
+        user.setScore(0);
 
         User savedUser = userRepository.save(user);
         BeanUtils.copyProperties(savedUser, dtoUser);

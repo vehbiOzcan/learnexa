@@ -12,7 +12,7 @@ async def ask_gemini(
 ):
     text = ""
     if file is not None:
-        # PDF dosyasını oku ve metne çevir
+        # PDF dosyasını okuyup ve metne çeviriyoruz
         try:
             contents = await file.read()
             from io import BytesIO
@@ -26,7 +26,7 @@ async def ask_gemini(
     else:
         return JSONResponse(content={"error": "Prompt veya PDF dosyası gereklidir."}, status_code=400)
 
-    # Gemini API'dan yanıt al
+    # Gemini APIdan yanıt alma kısmı
     response = chat_with_gemini(text)
     return {"response": response}
 

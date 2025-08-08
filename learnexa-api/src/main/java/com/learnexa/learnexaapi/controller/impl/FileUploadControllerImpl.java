@@ -1,18 +1,14 @@
 package com.learnexa.learnexaapi.controller.impl;
 
 import com.learnexa.learnexaapi.controller.IFileUploadController;
-import com.learnexa.learnexaapi.dto.DtoUploadedFile;
-import com.learnexa.learnexaapi.entity.RootEntity;
 import com.learnexa.learnexaapi.service.IFileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("api/uploads")

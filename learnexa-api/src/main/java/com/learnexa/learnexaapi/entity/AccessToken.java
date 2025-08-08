@@ -15,7 +15,9 @@ import jakarta.persistence.*;
 public class AccessToken {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "access_token_seq")
+    @SequenceGenerator(name = "access_token_seq", sequenceName = "access_token_seq", allocationSize = 1)
+    @Column(name = "ID")
     private Long id;
 
     @Column(name = "access_token")

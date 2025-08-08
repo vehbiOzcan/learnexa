@@ -6,7 +6,7 @@ def list_gemini_models():
         return f"Model listesi alınamadı: {str(e)}"
 import os
 from dotenv import load_dotenv
-import google.generativeai as genai  # DOĞRU OLAN BU!
+import google.generativeai as genai 
 
 load_dotenv()
 API_KEY = os.getenv("GEMINI_API_KEY")

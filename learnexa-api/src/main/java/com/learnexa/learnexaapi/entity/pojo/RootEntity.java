@@ -1,12 +1,10 @@
-package com.learnexa.learnexaapi.entity;
+package com.learnexa.learnexaapi.entity.pojo;
 
-import com.learnexa.learnexaapi.exception.ApiError;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 
 @Data
 @AllArgsConstructor

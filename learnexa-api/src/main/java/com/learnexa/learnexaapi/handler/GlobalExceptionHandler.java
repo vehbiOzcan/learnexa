@@ -1,6 +1,6 @@
 package com.learnexa.learnexaapi.handler;
 
-import com.learnexa.learnexaapi.entity.RootEntity;
+import com.learnexa.learnexaapi.entity.pojo.RootEntity;
 import com.learnexa.learnexaapi.exception.ApiError;
 import com.learnexa.learnexaapi.exception.BaseException;
 import com.learnexa.learnexaapi.exception.ExceptionInfo;

@@ -1,4 +1,4 @@
-package com.learnexa.learnexaapi.jwt.dto;
+package com.learnexa.learnexaapi.dto.auth;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -7,7 +7,8 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class AuthResponse {
-    private String accessToken;
+public class RefreshTokenRequest {
+
     private String refreshToken;
+    private String accessToken;
 }

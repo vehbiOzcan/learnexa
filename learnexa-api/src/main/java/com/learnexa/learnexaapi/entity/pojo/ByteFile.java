@@ -1,4 +1,4 @@
-package com.learnexa.learnexaapi.entity;
+package com.learnexa.learnexaapi.entity.pojo;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

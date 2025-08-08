@@ -2,7 +2,7 @@ package com.learnexa.learnexaapi.config;
 
 import com.learnexa.learnexaapi.jwt.AuthEntryPoint;
 import com.learnexa.learnexaapi.jwt.JwtAuthenticationFilter;
-import com.learnexa.learnexaapi.entity.Role;
+import com.learnexa.learnexaapi.entity.enums.Role;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
