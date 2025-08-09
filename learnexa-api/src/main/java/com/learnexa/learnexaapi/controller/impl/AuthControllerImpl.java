@@ -2,11 +2,8 @@ package com.learnexa.learnexaapi.controller.impl;
 
 import com.learnexa.learnexaapi.controller.IAuthController;
 import com.learnexa.learnexaapi.dto.DtoUser;
+import com.learnexa.learnexaapi.dto.auth.*;
 import com.learnexa.learnexaapi.entity.pojo.RootEntity;
-import com.learnexa.learnexaapi.dto.auth.AuthRequest;
-import com.learnexa.learnexaapi.dto.auth.AuthResponse;
-import com.learnexa.learnexaapi.dto.auth.RefreshTokenRequest;
-import com.learnexa.learnexaapi.dto.auth.RegisterRequest;
 import com.learnexa.learnexaapi.service.IAuthService;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +31,8 @@ public class AuthControllerImpl implements IAuthController {
 
     @PostMapping("/authenticate")
     @Override
-    public RootEntity<AuthResponse> authenticate(@RequestBody AuthRequest authRequest) {
-        AuthResponse response = authService.authenticate(authRequest);
+    public RootEntity<LoginResponse> authenticate(@RequestBody AuthRequest authRequest) {
+        LoginResponse response = authService.authenticate(authRequest);
         return RootEntity.ok(response);
     }
 

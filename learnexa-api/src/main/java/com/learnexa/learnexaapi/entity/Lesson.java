@@ -35,7 +35,6 @@ public class Lesson {
     @JoinColumn(name = "USER_ID")
     private User user;
 
-
     @OneToMany(mappedBy = "lesson", fetch = FetchType.LAZY)
     private List<LessonTopic> lessonTopic;
 

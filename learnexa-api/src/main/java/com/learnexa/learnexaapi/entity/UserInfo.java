@@ -32,8 +32,11 @@ public class UserInfo {
     @Column(name = "STAR")
     private Integer star;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "USER_ID")
+    @Column(name = "SERIES")
+    private Integer series;
+
+    @OneToOne
+    @JoinColumn(name = "USER_ID", referencedColumnName = "ID")
     private User user;
 
     @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)

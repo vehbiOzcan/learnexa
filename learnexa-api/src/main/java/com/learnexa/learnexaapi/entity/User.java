@@ -11,6 +11,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 @Entity
 @Table(name = "user")
@@ -27,8 +28,8 @@ public class User implements UserDetails {
     @Column(name = "USERNAME", unique = true)
     private String username;
 
-    @Column(name = "AD_SOYAD")
-    private String adSoyad;
+    @Column(name = "FULLNAME")
+    private String fullname;
 
     @Column(name = "EMAIL", unique = true)
     private String email;
@@ -39,11 +40,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @Column(name = "SCORE")
-    private Integer score;
+    @OneToOne(mappedBy = "user")
+    private UserInfo userInfo;
 
     public User(String password, Role role, String adSoyad, String email) {
-        this.adSoyad = adSoyad;
+        this.fullname = adSoyad;
         this.username = email.split("@")[0];
         this.password = password;
         this.email = email;

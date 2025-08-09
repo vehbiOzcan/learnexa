@@ -1,8 +1,10 @@
 package com.learnexa.learnexaapi.service.impl;
 
 import com.learnexa.learnexaapi.dto.DtoUser;
+import com.learnexa.learnexaapi.dto.auth.*;
 import com.learnexa.learnexaapi.entity.AccessToken;
 import com.learnexa.learnexaapi.entity.RefreshToken;
+import com.learnexa.learnexaapi.entity.UserInfo;
 import com.learnexa.learnexaapi.entity.enums.Role;
 import com.learnexa.learnexaapi.entity.User;
 import com.learnexa.learnexaapi.exception.BaseException;
@@ -10,10 +12,7 @@ import com.learnexa.learnexaapi.exception.ErrorMessage;
 import com.learnexa.learnexaapi.exception.MessageType;
 import com.learnexa.learnexaapi.jwt.IJwtService;
 import com.learnexa.learnexaapi.jwt.IRefreshTokenService;
-import com.learnexa.learnexaapi.dto.auth.AuthRequest;
-import com.learnexa.learnexaapi.dto.auth.AuthResponse;
-import com.learnexa.learnexaapi.dto.auth.RefreshTokenRequest;
-import com.learnexa.learnexaapi.dto.auth.RegisterRequest;
+import com.learnexa.learnexaapi.repository.UserInfoRepository;
 import com.learnexa.learnexaapi.repository.UserRepository;
 import com.learnexa.learnexaapi.service.IAuthService;
 import org.springframework.beans.BeanUtils;
@@ -45,6 +44,9 @@ public class AuthServiceImpl implements IAuthService {
     @Autowired
     private IRefreshTokenService refreshTokenService;
 
+    @Autowired
+    private UserInfoRepository userInfoRepository;
+
     @Override
     public DtoUser register(RegisterRequest registerRequest) {
         DtoUser dtoUser = new DtoUser();
@@ -52,21 +54,32 @@ public class AuthServiceImpl implements IAuthService {
         if(userRepository.findByUsername(registerRequest.getEmail().split("@")[0]).isPresent()) {
             throw new BaseException(new ErrorMessage(MessageType.USER_ALREADY_EXISTS));
         }
+
+        UserInfo userInfo = new UserInfo();
+        userInfo.setStar(0);
+        userInfo.setScore(0);
+        userInfo.setRank(0);
+
+        UserInfo savedUserInfo = userInfoRepository.save(userInfo);
+
         user.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
         user.setRole(Role.USER);
         user.setUsername(registerRequest.getEmail().split("@")[0]);
-        user.setAdSoyad(registerRequest.getFullname());
-        user.setScore(0);
+        user.setEmail(registerRequest.getEmail());
+        user.setFullname(registerRequest.getFullname());
+        user.setUserInfo(savedUserInfo);
+
 
         User savedUser = userRepository.save(user);
         BeanUtils.copyProperties(savedUser, dtoUser);
         dtoUser.setRole(savedUser.getRole());
+        dtoUser.setFullname(savedUser.getFullname());
 
         return dtoUser;
     }
 
     @Override
-    public AuthResponse authenticate(AuthRequest authRequest) {
+    public LoginResponse authenticate(AuthRequest authRequest) {
 
        try {
            UsernamePasswordAuthenticationToken authentication =
@@ -87,10 +100,17 @@ public class AuthServiceImpl implements IAuthService {
            /// Kayıt edilen AccessTokenden token değeri alınıyor
            String accessToken = jwtService.saveAccessToken(accessTokenObj).getAccessToken();
 
+           DtoUser dtoUser = DtoUser.builder()
+                   .id(user.getId())
+                   .username(user.getUsername())
+                   .fullname(user.getFullname())
+                   .role(user.getRole())
+                   .build();
+
            RefreshToken refreshToken = refreshTokenService.createRefreshToken(user);
            RefreshToken dbRefreshToken = refreshTokenService.saveRefreshToken(refreshToken);
 
-           return new AuthResponse(accessToken,dbRefreshToken.getRefreshToken());
+           return new LoginResponse(accessToken,dbRefreshToken.getRefreshToken(),dtoUser);
 
        } catch (InternalAuthenticationServiceException e) {
            throw new BaseException(new ErrorMessage(MessageType.VALIDATION_ERROR,": [ " + e.getMessage() + " ]"));

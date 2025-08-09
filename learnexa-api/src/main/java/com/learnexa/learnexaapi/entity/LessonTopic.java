@@ -32,6 +32,9 @@ public class LessonTopic {
     @Column(name = "LT_ORDER")
     private Integer lessonTopicOrder;
 
+    @Column(name = "COMPLETED")
+    private Boolean comleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "LESSON_ID")
     private Lesson lesson;

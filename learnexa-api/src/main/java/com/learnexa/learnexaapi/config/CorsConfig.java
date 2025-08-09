@@ -1,4 +1,5 @@
 package com.learnexa.learnexaapi.config;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -12,9 +13,12 @@ public class CorsConfig {
         return new WebMvcConfigurer() {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
-                registry.addMapping("/api/**").allowedOrigins("*")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS");
-
+                registry.addMapping("/api/**")
+                        .allowedOriginPatterns("*") // allowedOrigins("*") yerine allowedOriginPatterns kullanın
+                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS", "HEAD", "PATCH")
+                        .allowedHeaders("*") // Tüm header'lara izin ver
+                        .allowCredentials(true) // Credentials desteği
+                        .maxAge(3600); // Preflight cache süresi
             }
         };
     }

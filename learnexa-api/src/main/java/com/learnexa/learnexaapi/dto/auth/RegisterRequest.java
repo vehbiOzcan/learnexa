@@ -18,7 +18,7 @@ public class RegisterRequest {
 
     @NotNull(message = "İsim alanı null olamaz!")
     @NotEmpty(message = "İsim alanı boş bırakılamaz!")
-    @Size(min = 6, max = 50, message = "İsim 2 ile 50 karakter arasında olmalıdır.")
+    @Size(min = 2, max = 50, message = "İsim 2 ile 50 karakter arasında olmalıdır.")
     private String fullname;
 
     @Size(min = 6, message = "Password alanı en az 6 karakter olmalıdır.")
