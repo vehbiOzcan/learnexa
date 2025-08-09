@@ -21,8 +21,8 @@ interface RankUser {
 }
 
 const mockUsers: RankUser[] = [
-  { id: '1', name: 'Ali Yılmaz', points: 2450, rank: 1, avatar: '🥇', level: 'Expert' },
-  { id: '2', name: 'Ayşe Kaya', points: 2180, rank: 2, avatar: '🥈', level: 'Advanced' },
+  { id: '1', name: 'Ali Yılmaz', points: 2450, rank: 1, avatar: '🥇', level: 'Master' },
+  { id: '2', name: 'Ayşe Kaya', points: 2180, rank: 2, avatar: '🥈', level: 'Expert' },
   { id: '3', name: 'Mehmet Demir', points: 1950, rank: 3, avatar: '🥉', level: 'Advanced' },
   { id: '4', name: 'Fatma Çelik', points: 1720, rank: 4, avatar: '🏆', level: 'Intermediate' },
   { id: '5', name: 'Ahmet Özkan', points: 1580, rank: 5, avatar: '⭐', level: 'Intermediate' },
@@ -34,9 +34,9 @@ const mockUsers: RankUser[] = [
 export default function RankingScreen() {
   const { user } = useAuthStore();
   
-  const currentUser = mockUsers.find(u => u.name === 'Sen') || {
+  const currentUser =  {
     id: user?.id || '6',
-    name: user?.name || 'Sen',
+    name: user?.fullname || 'Sen',
     points: user?.points || 150,
     rank: user?.rank || 15,
     avatar: '👤',
@@ -45,6 +45,8 @@ export default function RankingScreen() {
 
   const getLevelColor = (level: string) => {
     switch (level) {
+      case 'Master':
+        return ['#67E5FF', '#68CAFF'];
       case 'Expert':
         return ['#FFD700', '#FFA500'];
       case 'Advanced':
@@ -52,7 +54,7 @@ export default function RankingScreen() {
       case 'Intermediate':
         return ['#CD7F32', '#B8860B'];
       default:
-        return ['#4ade80', '#22c55e'];
+        return ['#4ADE80', '#22C55E'];
     }
   };
 
