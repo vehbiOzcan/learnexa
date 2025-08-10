@@ -42,4 +42,10 @@ public class UserInfo {
     @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)
     private List<Pomodoro> pomodoros;
 
+    @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)
+    private List<Goals> goals;
+
+    @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)
+    private List<Badge> badges;
+
 }

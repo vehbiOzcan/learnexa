@@ -14,26 +14,26 @@ import { useAuthStore } from '../../src/store/authStore';
 import { useCourseStore } from '../../src/store/courseStore';
 import { usePomodoroStore } from '../../src/store/pomodoroStore';
 
-export default function ProfileScreen() {
-  const { user, logout } = useAuthStore();
-  const { courses } = useCourseStore();
-  const { totalPomodoros } = usePomodoroStore();
+export function ProfileScreen() {
+  const {user, logout} = useAuthStore();
+  const {courses} = useCourseStore();
+  const {totalPomodoros} = usePomodoroStore();
 
   const handleLogout = () => {
     Alert.alert(
-      'Çıkış Yap',
-      'Çıkış yapmak istediğinizden emin misiniz?',
-      [
-        { text: 'İptal', style: 'cancel' },
-        {
-          text: 'Çıkış Yap',
-          style: 'destructive',
-          onPress: async () => {
-            await logout();
-            router.replace('/(auth)/login');
+        'Çıkış Yap',
+        'Çıkış yapmak istediğinizden emin misiniz?',
+        [
+          {text: 'İptal', style: 'cancel'},
+          {
+            text: 'Çıkış Yap',
+            style: 'destructive',
+            onPress: async () => {
+              await logout();
+              router.replace('/(auth)/login');
+            },
           },
-        },
-      ]
+        ]
     );
   };
 
@@ -98,126 +98,126 @@ export default function ProfileScreen() {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
-        {/* Profile Header */}
-        <LinearGradient
-          colors={['#667eea', '#764ba2']}
-          style={styles.header}
-        >
-          <View style={styles.profileInfo}>
-            <View style={styles.avatar}>
-              <Text style={styles.avatarText}>
-                {user?.name?.charAt(0).toUpperCase() || 'U'}
-              </Text>
+      <SafeAreaView style={styles.container}>
+        <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+          {/* Profile Header */}
+          <LinearGradient
+              colors={['#667eea', '#764ba2']}
+              style={styles.header}
+          >
+            <View style={styles.profileInfo}>
+              <View style={styles.avatar}>
+                <Text style={styles.avatarText}>
+                  {user?.fullname?.charAt(0).toUpperCase() || 'U'}
+                </Text>
+              </View>
+              <Text style={styles.name}>{user?.fullname || 'Kullanıcı'}</Text>
+              <Text style={styles.email}>{user?.username || 'email@example.com'}</Text>
+              <View style={styles.levelBadge}>
+                <Text style={styles.levelText}>Beginner</Text>
+              </View>
             </View>
-            <Text style={styles.name}>{user?.name || 'Kullanıcı'}</Text>
-            <Text style={styles.email}>{user?.email || 'email@example.com'}</Text>
-            <View style={styles.levelBadge}>
-              <Text style={styles.levelText}>Beginner</Text>
-            </View>
-          </View>
-        </LinearGradient>
+          </LinearGradient>
 
-        {/* Stats Grid */}
-        <View style={styles.statsContainer}>
-          {stats.map((stat, index) => (
-            <TouchableOpacity key={index} style={styles.statCard}>
-              <LinearGradient
-                colors={stat.color}
-                style={styles.statGradient}
-              >
-                <Text style={styles.statIcon}>{stat.icon}</Text>
-                <Text style={styles.statValue}>{stat.value}</Text>
-                <Text style={styles.statTitle}>{stat.title}</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        {/* Weekly Progress */}
-        <View style={styles.progressSection}>
-          <Text style={styles.sectionTitle}>Bu Hafta</Text>
-          <View style={styles.progressCard}>
-            <View style={styles.progressHeader}>
-              <Text style={styles.progressTitle}>Haftalık Hedef</Text>
-              <Text style={styles.progressPercentage}>60%</Text>
-            </View>
-            <View style={styles.progressBar}>
-              <LinearGradient
-                colors={['#4ade80', '#22c55e']}
-                style={[styles.progressFill, { width: '60%' }]}
-              />
-            </View>
-            <Text style={styles.progressText}>
-              5 günde 3 ders tamamladın. Harika gidiyorsun! 🎉
-            </Text>
-          </View>
-        </View>
-
-        {/* Menu Items */}
-        <View style={styles.menuSection}>
-          <Text style={styles.sectionTitle}>Menü</Text>
-          <View style={styles.menuList}>
-            {menuItems.map((item, index) => (
-              <TouchableOpacity
-                key={index}
-                style={styles.menuItem}
-                onPress={item.onPress}
-              >
-                <View style={styles.menuLeft}>
-                  <Text style={styles.menuIcon}>{item.icon}</Text>
-                  <View style={styles.menuContent}>
-                    <Text style={styles.menuTitle}>{item.title}</Text>
-                    <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
-                  </View>
-                </View>
-                <Text style={styles.menuArrow}>›</Text>
-              </TouchableOpacity>
+          {/* Stats Grid */}
+          <View style={styles.statsContainer}>
+            {stats.map((stat, index) => (
+                <TouchableOpacity key={index} style={styles.statCard}>
+                  <LinearGradient
+                      colors={stat.color}
+                      style={styles.statGradient}
+                  >
+                    <Text style={styles.statIcon}>{stat.icon}</Text>
+                    <Text style={styles.statValue}>{stat.value}</Text>
+                    <Text style={styles.statTitle}>{stat.title}</Text>
+                  </LinearGradient>
+                </TouchableOpacity>
             ))}
           </View>
-        </View>
 
-        {/* Quick Actions */}
-        <View style={styles.actionsSection}>
-          <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
-          <View style={styles.actionButtons}>
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/(tabs)/courses')}
-            >
-              <LinearGradient
-                colors={['#4facfe', '#00f2fe']}
-                style={styles.actionGradient}
+          {/* Weekly Progress */}
+          <View style={styles.progressSection}>
+            <Text style={styles.sectionTitle}>Bu Hafta</Text>
+            <View style={styles.progressCard}>
+              <View style={styles.progressHeader}>
+                <Text style={styles.progressTitle}>Haftalık Hedef</Text>
+                <Text style={styles.progressPercentage}>60%</Text>
+              </View>
+              <View style={styles.progressBar}>
+                <LinearGradient
+                    colors={['#4ade80', '#22c55e']}
+                    style={[styles.progressFill, {width: '60%'}]}
+                />
+              </View>
+              <Text style={styles.progressText}>
+                5 günde 3 ders tamamladın. Harika gidiyorsun! 🎉
+              </Text>
+            </View>
+          </View>
+
+          {/* Menu Items */}
+          <View style={styles.menuSection}>
+            <Text style={styles.sectionTitle}>Menü</Text>
+            <View style={styles.menuList}>
+              {menuItems.map((item, index) => (
+                  <TouchableOpacity
+                      key={index}
+                      style={styles.menuItem}
+                      onPress={item.onPress}
+                  >
+                    <View style={styles.menuLeft}>
+                      <Text style={styles.menuIcon}>{item.icon}</Text>
+                      <View style={styles.menuContent}>
+                        <Text style={styles.menuTitle}>{item.title}</Text>
+                        <Text style={styles.menuSubtitle}>{item.subtitle}</Text>
+                      </View>
+                    </View>
+                    <Text style={styles.menuArrow}>›</Text>
+                  </TouchableOpacity>
+              ))}
+            </View>
+          </View>
+
+          {/* Quick Actions */}
+          <View style={styles.actionsSection}>
+            <Text style={styles.sectionTitle}>Hızlı İşlemler</Text>
+            <View style={styles.actionButtons}>
+              <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={() => router.push('/(tabs)/courses')}
               >
-                <Text style={styles.actionIcon}>📚</Text>
-                <Text style={styles.actionText}>Yeni Ders</Text>
-              </LinearGradient>
-            </TouchableOpacity>
-            
-            <TouchableOpacity
-              style={styles.actionButton}
-              onPress={() => router.push('/(tabs)/pomodoro')}
-            >
-              <LinearGradient
-                colors={['#f093fb', '#f5576c']}
-                style={styles.actionGradient}
+                <LinearGradient
+                    colors={['#4facfe', '#00f2fe']}
+                    style={styles.actionGradient}
+                >
+                  <Text style={styles.actionIcon}>📚</Text>
+                  <Text style={styles.actionText}>Yeni Ders</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                  style={styles.actionButton}
+                  onPress={() => router.push('/(tabs)/pomodoro')}
               >
-                <Text style={styles.actionIcon}>🍅</Text>
-                <Text style={styles.actionText}>Pomodoro</Text>
-              </LinearGradient>
+                <LinearGradient
+                    colors={['#f093fb', '#f5576c']}
+                    style={styles.actionGradient}
+                >
+                  <Text style={styles.actionIcon}>🍅</Text>
+                  <Text style={styles.actionText}>Pomodoro</Text>
+                </LinearGradient>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Logout Button */}
+          <View style={styles.logoutSection}>
+            <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
+              <Text style={styles.logoutText}>Çıkış Yap</Text>
             </TouchableOpacity>
           </View>
-        </View>
-
-        {/* Logout Button */}
-        <View style={styles.logoutSection}>
-          <TouchableOpacity style={styles.logoutButton} onPress={handleLogout}>
-            <Text style={styles.logoutText}>Çıkış Yap</Text>
-          </TouchableOpacity>
-        </View>
-      </ScrollView>
-    </SafeAreaView>
+        </ScrollView>
+      </SafeAreaView>
   );
 }
 

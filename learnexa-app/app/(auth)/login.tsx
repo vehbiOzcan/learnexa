@@ -189,7 +189,7 @@ const styles = StyleSheet.create({
 });*/
 
 
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -201,17 +201,18 @@ import {
   Platform,
   SafeAreaView,
 } from 'react-native';
-import { Link, router } from 'expo-router';
+import { Link, router, useLocalSearchParams } from 'expo-router';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useAuthStore } from '../../src/store/authStore';
 
 export default function LoginScreen() {
-  const [email, setEmail] = useState('');
+  const { email: paramEmail } = useLocalSearchParams<{ email?: string }>();
+  const [email, setEmail] = useState(paramEmail || '');
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuthStore();
 
-  const validateEmailOrUsername = (email: string) => {
+  const validateEmail = (email: string) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return email.includes("@") ? emailRegex.test(email) : true;
   };
@@ -223,7 +224,7 @@ export default function LoginScreen() {
       return;
     }
 
-    if (!validateEmailOrUsername(email)) {
+    if (!validateEmail(email)) {
       Alert.alert('Hata', 'Lütfen geçerli bir e-posta adresi girin');
       return;
     }

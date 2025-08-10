@@ -297,21 +297,28 @@ export default function RegisterScreen() {
 
     setIsLoading(true);
     try {
-      const success = await register(name.trim(), email.toLowerCase().trim(), password);
+      const result = await register(name.trim(), email.toLowerCase().trim(), password);
 
-      if (success) {
+      if (result.success && result.username) {
         Alert.alert(
-            'Başarılı',
-            'Hesabınız başarıyla oluşturuldu! Şimdi giriş yapabilirsiniz.',
+            'Hesap Başarıyla Oluşturuldu! 🎉',
+            `Hoş geldin ${name}!\n\nKullanıcı adın: @${result.username}\n\nŞimdi bu bilgilerle giriş yapabilirsin.`,
             [
               {
                 text: 'Giriş Yap',
-                onPress: () => router.replace('/(auth)/login')
+                onPress: () => {
+                  // Giriş sayfasına email'i önceden doldur
+                  router.push({
+                    pathname: '/(auth)/login',
+                    params: { email: email.toLowerCase().trim() }
+                  });
+                }
               }
             ]
         );
       } else {
-        Alert.alert('Hata', 'Kayıt başarısız. Bu e-posta adresi zaten kullanımda olabilir.');
+        const errorMessage = result.error || 'Kayıt başarısız. Bu e-posta adresi zaten kullanımda olabilir.';
+        Alert.alert('Kayıt Hatası', errorMessage);
       }
     } catch (error: any) {
       console.error('Register error:', error);

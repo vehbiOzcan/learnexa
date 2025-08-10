@@ -25,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
+import java.util.Random;
 
 @Service
 public class AuthServiceImpl implements IAuthService {
@@ -51,31 +52,82 @@ public class AuthServiceImpl implements IAuthService {
     public DtoUser register(RegisterRequest registerRequest) {
         DtoUser dtoUser = new DtoUser();
         User user = new User();
-        if(userRepository.findByUsername(registerRequest.getEmail().split("@")[0]).isPresent()) {
+
+        if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
             throw new BaseException(new ErrorMessage(MessageType.USER_ALREADY_EXISTS));
         }
+
+        String baseUsername = registerRequest.getEmail().split("@")[0];
+        String uniqueUsername = generateUniqueUsername(baseUsername);
+
+        user.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
+        user.setRole(Role.USER);
+        user.setUsername(uniqueUsername);
+        user.setEmail(registerRequest.getEmail());
+        user.setFullname(registerRequest.getFullname());
+
+        User savedUser = userRepository.save(user);
 
         UserInfo userInfo = new UserInfo();
         userInfo.setStar(0);
         userInfo.setScore(0);
         userInfo.setRank(0);
+        userInfo.setSeries(0);
+        userInfo.setUser(savedUser);
 
-        UserInfo savedUserInfo = userInfoRepository.save(userInfo);
+        userInfoRepository.save(userInfo);
 
-        user.setPassword(bCryptPasswordEncoder.encode(registerRequest.getPassword()));
-        user.setRole(Role.USER);
-        user.setUsername(registerRequest.getEmail().split("@")[0]);
-        user.setEmail(registerRequest.getEmail());
-        user.setFullname(registerRequest.getFullname());
-        user.setUserInfo(savedUserInfo);
-
-
-        User savedUser = userRepository.save(user);
         BeanUtils.copyProperties(savedUser, dtoUser);
         dtoUser.setRole(savedUser.getRole());
         dtoUser.setFullname(savedUser.getFullname());
 
         return dtoUser;
+    }
+
+    //Username çakışmalarını önlemek için her kullanıcıya uniq username ataması yapıyoruz
+    private String generateUniqueUsername(String baseUsername) {
+        // Username'i temizliyoruz yani özel karakterleri kaldırıp, küçük harflere çeviriyoruz
+        String cleanUsername = baseUsername.toLowerCase()
+                .replaceAll("[^a-zA-Z0-9]", "")
+                .trim();
+
+        // Minimum 2 karakter kontrolü
+        if(cleanUsername.length() < 2) {
+            cleanUsername = "user" + cleanUsername;
+        }
+
+        // Maximum karakter kontrolü
+        if(cleanUsername.length() > 15) {
+            cleanUsername = cleanUsername.substring(0, 15);
+        }
+
+        String username = cleanUsername;
+        int counter = 1;
+
+        // Username'in benzersiz olup olmadığını kontrol ediyoruz
+        while(userRepository.findByUsername(username).isPresent()) {
+            // Sayı ekleyerek yeni username oluştur
+            String suffix = String.valueOf(counter);
+
+            // Toplam uzunluk 20yi geçemez
+            if(cleanUsername.length() + suffix.length() > 20) {
+                String truncatedBase = cleanUsername.substring(0, 20 - suffix.length());
+                username = truncatedBase + suffix;
+            } else {
+                username = cleanUsername + suffix;
+            }
+
+            counter++;
+
+            // Güvenlik için maximum limit bu kadar aynı username ilk başta olmaz sanırım, Olursada hayırlısı :D
+            if(counter > 9999) {
+                Random random = new Random();
+                username = cleanUsername + random.nextInt(10000);
+                break;
+            }
+        }
+
+        return username;
     }
 
     @Override

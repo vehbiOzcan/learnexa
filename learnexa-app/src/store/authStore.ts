@@ -22,13 +22,13 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (email: string, password: string) => Promise<boolean>;
-  register: (name: string, email: string, password: string) => Promise<boolean>;
+  register: (name: string, email: string, password: string) => Promise<{ success: boolean; username?: string; error?: string }>;
   logout: () => Promise<void>;
   loadUser: () => Promise<void>;
   refreshAccessToken: () => Promise<boolean>;
 }
 
-//  API requests için yardımcı metodumuz bu
+// Helper function to make API requests
 const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
   const url = `${API_BASE_URL}${endpoint}`;
 
@@ -54,14 +54,14 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     console.log('API Response Status:', response.status, response.statusText);
     console.log('API Response Headers:', response.headers);
 
-
+    // Check if response is JSON
     const contentType = response.headers.get('content-type');
     let data;
 
     if (contentType && contentType.includes('application/json')) {
       data = await response.json();
     } else {
-
+      // If not JSON, get text response for debugging
       const textResponse = await response.text();
       console.log('Non-JSON Response:', textResponse);
       throw new Error(`Server returned non-JSON response: ${response.status} ${response.statusText}`);
@@ -70,14 +70,14 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
     console.log('API Response Data:', data);
 
     if (!response.ok) {
-      // Backend validation hataları
+      // Backend validation hatalarını daha detaylı göster
       let errorMessage = `HTTP Error: ${response.status}`;
 
       if (data?.exceptionInfo?.message) {
         const validationErrors = data.exceptionInfo.message;
         const errorMessages = [];
 
-        // Validation hatalarını parse
+        // Validation hatalarını parse et
         for (const [field, errors] of Object.entries(validationErrors)) {
           if (Array.isArray(errors)) {
             errorMessages.push(`${field}: ${errors.join(', ')}`);
@@ -108,7 +108,7 @@ const apiRequest = async (endpoint: string, options: RequestInit = {}) => {
       endpoint
     });
 
-    // Network error
+    // Network error detection
     if (error.name === 'TypeError' && error.message.includes('fetch')) {
       throw new Error('Network connection failed. Please check your internet connection and server.');
     }
@@ -125,7 +125,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
 
   login: async (email: string, password: string) => {
     try {
-      //Username'i emailden ayıkladık
+      // Extract username from email (before @ symbol)
       const username = email.split('@')[0];
 
       const response = await apiRequest('/auth/authenticate', {
@@ -147,10 +147,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           username: response.data.user.username,
           fullname: response.data.user.fullname,
           role: response.data.user.role,
-          email, // Email'i frontend'den ekle
+          email, // Email'i frontend'den ekliyoruz
         };
 
-        //  tokens ve user data
+        // Store tokens and user data
         await AsyncStorage.setItem('tokens', JSON.stringify(tokens));
         await AsyncStorage.setItem('user', JSON.stringify(user));
 
@@ -190,8 +190,9 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           email,
         };
 
-        // Register işleminden sonra token almıyoruz sadece user bilgisini saklarız çünkü zaten kullanıcının login yapması gerekecek
-        await AsyncStorage.setItem('user', JSON.stringify(user));
+        // Register işleminden sonra token almıyoruz, sadece user bilgisini sakla
+        // Kullanıcının login yapması gerekecek
+        await AsyncStorage.setItem('tempUser', JSON.stringify(user)); // Geçici olarak sakla
 
         set({
           user,
@@ -199,13 +200,13 @@ export const useAuthStore = create<AuthState>((set, get) => ({
           tokens: null
         });
 
-        return true;
+        return { success: true, username: user.username }; // Username'i de döndür
       }
 
-      return false;
+      return { success: false };
     } catch (error) {
       console.error('Register error:', error);
-      return false;
+      return { success: false, error: error.message };
     }
   },
 
@@ -230,10 +231,10 @@ export const useAuthStore = create<AuthState>((set, get) => ({
       const tokens = tokensData[1] ? JSON.parse(tokensData[1]) : null;
 
       if (user && tokens) {
-
+        // Check if access token is still valid
         const { refreshAccessToken } = get();
 
-
+        // Try to refresh token if it's expired
         const isTokenValid = await refreshAccessToken();
 
         if (isTokenValid) {
@@ -244,7 +245,7 @@ export const useAuthStore = create<AuthState>((set, get) => ({
             isLoading: false
           });
         } else {
-
+          // Tokens are invalid, clear storage
           await AsyncStorage.multiRemove(['user', 'tokens']);
           set({
             user: null,
@@ -270,17 +271,18 @@ export const useAuthStore = create<AuthState>((set, get) => ({
         return false;
       }
 
-
+      // Check if current token is expired
       const payload = JSON.parse(atob(tokens.accessToken.split('.')[1]));
       const currentTime = Date.now() / 1000;
 
-
+      // If token is still valid (5 minutes buffer), return true
       if (payload.exp > currentTime + 300) {
         return true;
       }
 
-
-      return payload.exp > currentTime - 3600;
+      // Note: You'll need to implement refresh token endpoint on your backend
+      // For now, we'll just check if the token format is valid
+      return payload.exp > currentTime - 3600; // Allow 1 hour grace period
 
     } catch (error) {
       console.error('Refresh token error:', error);

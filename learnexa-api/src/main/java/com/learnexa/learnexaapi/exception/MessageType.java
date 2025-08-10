@@ -31,7 +31,7 @@ public enum MessageType {
 
     // Kullanıcıya Ait Hatalar
     USER_NOT_FOUND("3001", "Kullanıcı Bulunamadı", "İstenilen kullanıcı bulunamadı. Lütfen kullanıcı adını kontrol edin.", HttpStatus.NOT_FOUND),
-    USER_ALREADY_EXISTS("3002", "Kullanıcı Zaten Var", "Bu username ile zaten bir kullanıcı mevcut. Lütfen farklı bir username girin.", HttpStatus.CONFLICT),
+    USER_ALREADY_EXISTS("3002", "Kullanıcı Zaten Var", "Bu e-mail hesabı ile zaten bir kullanıcı mevcut. Lütfen farklı bir e-mail girin.", HttpStatus.CONFLICT),
 
     // Refresh Token İlgili Hatalar
     REFRESH_TOKEN_INVALID("4001", "Geçersiz Refresh Token", "Sağlanan refresh token geçersiz, lütfen yeniden giriş yapın.", HttpStatus.UNAUTHORIZED),
