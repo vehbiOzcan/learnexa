@@ -40,8 +40,11 @@ public class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(mappedBy = "user")
+   /* @OneToOne(mappedBy = "user")
     private UserInfo userInfo;
+
+    @OneToMany(mappedBy = "user")
+    private List<Lesson> lessons;*/
 
     public User(String password, Role role, String adSoyad, String email) {
         this.fullname = adSoyad;

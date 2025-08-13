@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DtoDownloadFile {
+public class DownloadFileDto {
     private String fileName;
     private String fileType;
     private String filePath;

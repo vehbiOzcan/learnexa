@@ -11,7 +11,7 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-public class DtoUploadedFile {
+public class UploadedFileDto {
 
     private Long id;
 

@@ -6,6 +6,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Entity
 @Table(name = "BADGE")
 @Data
@@ -21,5 +23,8 @@ public class Badge {
     private String badge;
 
     private BadgeType badgeType;
+
+    @OneToMany(mappedBy = "badge")
+    private List<UserInfoBadge> userInfoBadges;
 
 }

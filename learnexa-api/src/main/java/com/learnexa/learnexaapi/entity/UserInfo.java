@@ -46,6 +46,6 @@ public class UserInfo {
     private List<Goals> goals;
 
     @OneToMany(mappedBy = "userInfo", fetch = FetchType.LAZY)
-    private List<Badge> badges;
+    private List<UserInfoBadge> uiBadges;
 
 }

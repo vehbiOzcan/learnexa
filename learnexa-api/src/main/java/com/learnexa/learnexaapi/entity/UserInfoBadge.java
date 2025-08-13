@@ -19,10 +19,10 @@ public class UserInfoBadge {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "USER_INFO_ID")
-    private UserInfo userInfoId;
+    private UserInfo userInfo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "BADGE_ID")
-    private Badge badgeId;
+    private Badge badge;
 
 }

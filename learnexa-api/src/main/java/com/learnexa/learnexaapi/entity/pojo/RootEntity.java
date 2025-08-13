@@ -17,7 +17,7 @@ public class RootEntity<T> {
     private T data;
 
 
-    public static <T> RootEntity<T> ok(T data) {
+    public static <T> ResponseEntity<RootEntity<T>> ok(T data) {
 
         RootEntity<T>  result = new RootEntity<T>();
 
@@ -26,7 +26,7 @@ public class RootEntity<T> {
         result.setStatusCode(HttpStatus.OK.value());
         result.setData(data);
 
-        return result;
+        return ResponseEntity.ok().body(result);
     }
 
     public static <T> ResponseEntity<RootEntity<T>> ok(T data, HttpStatus status) {

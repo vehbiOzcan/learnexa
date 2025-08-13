@@ -1,10 +1,6 @@
 package com.learnexa.learnexaapi.dto;
 
-import com.learnexa.learnexaapi.entity.Badge;
-import com.learnexa.learnexaapi.entity.Goals;
-import com.learnexa.learnexaapi.entity.Pomodoro;
-import com.learnexa.learnexaapi.entity.User;
-import jakarta.persistence.*;
+import com.learnexa.learnexaapi.entity.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -15,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DtoUserInfo {
+public class UserInfoDto {
     private Long id;
 
     private Integer score;
@@ -26,11 +22,13 @@ public class DtoUserInfo {
 
     private Integer series;
 
-    private User user;
+    //private User user;
 
     private List<Pomodoro> pomodoros;
 
     private List<Goals> goals;
 
     private List<Badge> badges;
+
+    private List<Lesson> lessons;
 }
