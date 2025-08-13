@@ -1,7 +1,7 @@
 package com.learnexa.learnexaapi.controller.impl;
 
 import com.learnexa.learnexaapi.controller.IFileDownloadController;
-import com.learnexa.learnexaapi.dto.DtoDownloadFile;
+import com.learnexa.learnexaapi.dto.DownloadFileDto;
 import com.learnexa.learnexaapi.service.IFileDownloadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -18,7 +18,7 @@ public class FileDownloadControllerImpl implements IFileDownloadController {
     @GetMapping("view/{fileName}")
     @Override
     public ResponseEntity<?> downloadFileByte(@PathVariable("fileName") String fileName) {
-        DtoDownloadFile file = fileDownloadService.downloadFileByte(fileName);
+        DownloadFileDto file = fileDownloadService.downloadFileByte(fileName);
         return ResponseEntity.ok().contentType(MediaType.valueOf(file.getFileType())).body(file.getFileData()) ;
     }
 }

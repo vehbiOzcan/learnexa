@@ -1,29 +1,19 @@
 package com.learnexa.learnexaapi.service.impl;
 
-import com.learnexa.learnexaapi.dto.DtoUploadedFile;
+import com.learnexa.learnexaapi.dto.UploadedFileDto;
 import com.learnexa.learnexaapi.entity.UploadedFile;
 import com.learnexa.learnexaapi.exception.BaseException;
 import com.learnexa.learnexaapi.exception.ErrorMessage;
 import com.learnexa.learnexaapi.exception.MessageType;
-import com.learnexa.learnexaapi.jwt.utils.JwtUtils;
 import com.learnexa.learnexaapi.repository.UploadedFileRepository;
 import com.learnexa.learnexaapi.service.IFileUploadService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.multipart.MultipartHttpServletRequest;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
-import java.util.Date;
 import java.util.UUID;
-import java.util.concurrent.CompletableFuture;
 
 @Service
 public class FileUploadServiceImpl implements IFileUploadService {
@@ -36,7 +26,7 @@ public class FileUploadServiceImpl implements IFileUploadService {
 
     @Async(value = "FileUploadTaskExecutor")
     @Override
-    public DtoUploadedFile uploadFile(byte[] fileContent, String contentType) {
+    public UploadedFileDto uploadFile(byte[] fileContent, String contentType) {
         if (fileContent == null || fileContent.length == 0) {
             throw new BaseException(new ErrorMessage(MessageType.FILE_EMPTY));
         }
@@ -82,7 +72,7 @@ public class FileUploadServiceImpl implements IFileUploadService {
 
         UploadedFile savedFile = uploadedFileRepository.save(uploadedFile);
 
-        return DtoUploadedFile.builder()
+        return UploadedFileDto.builder()
                 .id(savedFile.getId())
                 .fileName(savedFile.getFileName())
                 .fileType(savedFile.getFileType())
@@ -96,7 +86,7 @@ public class FileUploadServiceImpl implements IFileUploadService {
 
     @Async(value = "FileUploadTaskExecutor")
     @Override
-    public DtoUploadedFile uploadFileBytes(byte[] fileBytes) {
+    public UploadedFileDto uploadFileBytes(byte[] fileBytes) {
         if (fileBytes == null || fileBytes.length == 0) {
             throw new BaseException(new ErrorMessage(MessageType.FILE_EMPTY));
         }
@@ -147,7 +137,7 @@ public class FileUploadServiceImpl implements IFileUploadService {
 
         UploadedFile savedFile = uploadedFileRepository.save(uploadedFile);
 
-        return DtoUploadedFile.builder()
+        return UploadedFileDto.builder()
                 .id(savedFile.getId())
                 .fileName(savedFile.getFileName())
                 .fileType(savedFile.getFileType())

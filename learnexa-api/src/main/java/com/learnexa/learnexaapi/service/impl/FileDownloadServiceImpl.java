@@ -1,6 +1,6 @@
 package com.learnexa.learnexaapi.service.impl;
 
-import com.learnexa.learnexaapi.dto.DtoDownloadFile;
+import com.learnexa.learnexaapi.dto.DownloadFileDto;
 import com.learnexa.learnexaapi.entity.UploadedFile;
 import com.learnexa.learnexaapi.exception.BaseException;
 import com.learnexa.learnexaapi.exception.ErrorMessage;
@@ -37,7 +37,7 @@ public class FileDownloadServiceImpl implements IFileDownloadService {
 
 
     @Override
-    public DtoDownloadFile downloadFileByte(String fileName) {
+    public DownloadFileDto downloadFileByte(String fileName) {
 
         Optional<UploadedFile> optionalUploadedFile = uploadedFileRepository.findByFileName(fileName);
 
@@ -57,7 +57,7 @@ public class FileDownloadServiceImpl implements IFileDownloadService {
             throw new RuntimeException(e);
         }
 
-        return DtoDownloadFile.builder().fileData(file)
+        return DownloadFileDto.builder().fileData(file)
                 .fileType(uploadedFile.getFileType())
                 .fileName(uploadedFile.getFileName())
                 .filePath(filePath)

@@ -1,7 +1,7 @@
 package com.learnexa.learnexaapi.controller.impl;
 
 import com.learnexa.learnexaapi.controller.IAuthController;
-import com.learnexa.learnexaapi.dto.DtoUser;
+import com.learnexa.learnexaapi.dto.UserDto;
 import com.learnexa.learnexaapi.dto.auth.*;
 import com.learnexa.learnexaapi.entity.pojo.RootEntity;
 import com.learnexa.learnexaapi.service.IAuthService;
@@ -24,21 +24,21 @@ public class AuthControllerImpl implements IAuthController {
 
     @PostMapping("/register")
     @Override
-    public ResponseEntity<RootEntity<DtoUser>> register(@RequestBody @Valid RegisterRequest registerRequest) {
-        DtoUser response = authService.register(registerRequest);
+    public ResponseEntity<RootEntity<UserDto>> register(@RequestBody @Valid RegisterRequest registerRequest) {
+        UserDto response = authService.register(registerRequest);
         return RootEntity.ok(response, HttpStatus.CREATED);
     }
 
     @PostMapping("/authenticate")
     @Override
-    public RootEntity<LoginResponse> authenticate(@RequestBody AuthRequest authRequest) {
+    public ResponseEntity<RootEntity<LoginResponse>> authenticate(@RequestBody AuthRequest authRequest) {
         LoginResponse response = authService.authenticate(authRequest);
         return RootEntity.ok(response);
     }
 
     @PostMapping("/refresh-token")
     @Override
-    public RootEntity<AuthResponse> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
+    public ResponseEntity<RootEntity<AuthResponse>> refreshToken(@RequestBody RefreshTokenRequest refreshTokenRequest) {
         AuthResponse response = authService.refreshToken(refreshTokenRequest);
         return RootEntity.ok(response);
     }

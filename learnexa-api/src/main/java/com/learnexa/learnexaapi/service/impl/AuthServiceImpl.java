@@ -1,17 +1,15 @@
 package com.learnexa.learnexaapi.service.impl;
 
-import com.learnexa.learnexaapi.dto.DtoUser;
+import com.learnexa.learnexaapi.dto.UserDto;
 import com.learnexa.learnexaapi.dto.auth.*;
-import com.learnexa.learnexaapi.entity.AccessToken;
-import com.learnexa.learnexaapi.entity.RefreshToken;
-import com.learnexa.learnexaapi.entity.UserInfo;
+import com.learnexa.learnexaapi.entity.*;
 import com.learnexa.learnexaapi.entity.enums.Role;
-import com.learnexa.learnexaapi.entity.User;
 import com.learnexa.learnexaapi.exception.BaseException;
 import com.learnexa.learnexaapi.exception.ErrorMessage;
 import com.learnexa.learnexaapi.exception.MessageType;
 import com.learnexa.learnexaapi.jwt.IJwtService;
 import com.learnexa.learnexaapi.jwt.IRefreshTokenService;
+import com.learnexa.learnexaapi.repository.PomodoroRepository;
 import com.learnexa.learnexaapi.repository.UserInfoRepository;
 import com.learnexa.learnexaapi.repository.UserRepository;
 import com.learnexa.learnexaapi.service.IAuthService;
@@ -47,10 +45,12 @@ public class AuthServiceImpl implements IAuthService {
 
     @Autowired
     private UserInfoRepository userInfoRepository;
+    @Autowired
+    private PomodoroRepository pomodoroRepository;
 
     @Override
-    public DtoUser register(RegisterRequest registerRequest) {
-        DtoUser dtoUser = new DtoUser();
+    public UserDto register(RegisterRequest registerRequest) {
+        UserDto dtoUser = new UserDto();
         User user = new User();
 
         if(userRepository.findByEmail(registerRequest.getEmail()).isPresent()) {
@@ -152,7 +152,7 @@ public class AuthServiceImpl implements IAuthService {
            /// Kayıt edilen AccessTokenden token değeri alınıyor
            String accessToken = jwtService.saveAccessToken(accessTokenObj).getAccessToken();
 
-           DtoUser dtoUser = DtoUser.builder()
+           UserDto dtoUser = UserDto.builder()
                    .id(user.getId())
                    .username(user.getUsername())
                    .fullname(user.getFullname())
